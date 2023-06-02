@@ -5,13 +5,26 @@ import RequestAPI from '../services/RequestAPI';
 function Table() {
   const {
     planets,
+    nameFilter,
+    setNameFilter,
   } = useContext(Context);
 
   const listPlanets = planets;
 
   return (
     <form className="table-filter-container">
-      <section className="filters-container">Filters</section>
+      <section className="filters-container">
+        <label htmlFor="name-filter">
+          <input
+            data-testid="name-filter"
+            className="name-filter"
+            value={ nameFilter }
+            type="text"
+            onChange={ ({ target }) => setNameFilter(target.value.toLowerCase()) }
+            placeholder="Filtrar por nome"
+          />
+        </label>
+      </section>
       <table>
         <RequestAPI />
         <thead>

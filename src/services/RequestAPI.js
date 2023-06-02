@@ -4,7 +4,7 @@ import Context from '../context/Context';
 const url = 'https://swapi.dev/api/planets/';
 
 function RequestAPI() {
-  const { setPlanets } = useContext(Context);
+  const { setPlanets, setInitialList } = useContext(Context);
 
   useEffect(() => {
     const getPlanets = async () => {
@@ -12,14 +12,14 @@ function RequestAPI() {
         const response = await fetch(url);
         const { results } = await response.json();
         delete results.residents;
-        console.log(results);
         setPlanets(results);
+        setInitialList(results);
       } catch (e) {
         console.log('RequestAPI error', e);
       }
     };
     getPlanets();
-  }, [setPlanets]);
+  }, [setPlanets, setInitialList]);
 }
 
 export default RequestAPI;
