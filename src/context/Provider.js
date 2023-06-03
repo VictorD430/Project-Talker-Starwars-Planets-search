@@ -13,6 +13,12 @@ function Provider({ children }) {
   const [comparisonFilter, setComparisonFilter] = useState('maior que');
   const [valueFilter, setValueFilter] = useState(0);
   const [filtered, setFiltered] = useState([]);
+  const [orderFilter, setOrderFilter] = useState('population');
+  const [orderSort, setOrderSort] = useState('');
+  const orderObj = {
+    column: 'population',
+    sort: 'ASC' };
+  const [orderState, setOrderState] = useState(orderObj);
 
   const state = {
     planets,
@@ -32,6 +38,12 @@ function Provider({ children }) {
     setValueFilter,
     filtered,
     setFiltered,
+    orderFilter,
+    setOrderFilter,
+    orderSort,
+    setOrderSort,
+    orderState,
+    setOrderState,
   };
 
   useEffect(() => {
@@ -55,6 +67,29 @@ function Provider({ children }) {
     });
     setPlanets(newFiltered);
   }, [filtered, initialList]);
+
+  const sortFunction = () => {
+    if (orderState.sort === 'ASC') {
+      const planetsA = planets
+        .filter((planet) => planet[orderState.column] === 'unknown');
+      const planetsB = planets
+        .filter((planet) => planet[orderState.column] !== 'unknown');
+      planetsB
+        .sort((a, b) => Number(a[orderState.column]) - (Number(b[orderState.column])));
+      setPlanets([...planetsB, ...planetsA]);
+    }
+    if (orderState.sort === 'DESC') {
+      const planetsA = planets
+        .filter((planet) => planet[orderState.column] === 'unknown');
+      const planetsB = planets
+        .filter((planet) => planet[orderState.column] !== 'unknown');
+      planetsB
+        .sort((a, b) => Number(b[orderState.column]) - (Number(a[orderState.column])));
+      setPlanets([...planetsB, ...planetsA]);
+    }
+  };
+
+  useEffect(sortFunction, [setPlanets, orderState]);
 
   return (
     <Context.Provider value={ state }>

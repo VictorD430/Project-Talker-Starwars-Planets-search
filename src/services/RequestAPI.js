@@ -12,6 +12,7 @@ function RequestAPI() {
         const response = await fetch(url);
         const { results } = await response.json();
         delete results.residents;
+        results.sort((a, b) => a.name.localeCompare(b.name));
         setPlanets(results);
         setInitialList(results);
       } catch (e) {

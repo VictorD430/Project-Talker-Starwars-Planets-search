@@ -21,6 +21,11 @@ function Table() {
     setValueFilter,
     filtered,
     setFiltered,
+    orderFilter,
+    setOrderFilter,
+    orderSort,
+    setOrderSort,
+    setOrderState,
   } = useContext(Context);
 
   const handleSubmit = (event) => {
@@ -47,6 +52,14 @@ function Table() {
     setFiltered([]);
     setPlanets(initialList);
     setInitialColumn(initialColumns);
+  };
+
+  const handleOrder = () => {
+    const newOrder = {
+      column: orderFilter,
+      sort: orderSort,
+    };
+    setOrderState(newOrder);
   };
 
   return (
@@ -103,6 +116,50 @@ function Table() {
           onClick={ handleSubmit }
         >
           FILTRAR
+        </button>
+        <label htmlFor="column-sort">
+          <select
+            data-testid="column-sort"
+            id="column-sort"
+            name="column-sort"
+            value={ orderFilter }
+            onChange={ ({ target }) => setOrderFilter(target.value) }
+          >
+            <option>population</option>
+            <option>orbital_period</option>
+            <option>diameter</option>
+            <option>rotation_period</option>
+            <option>surface_water</option>
+          </select>
+        </label>
+        <label htmlFor="sort-asc">
+          <input
+            data-testid="column-sort-input-asc"
+            type="radio"
+            name="sort"
+            id="sort-asc"
+            value="ASC"
+            onChange={ ({ target }) => setOrderSort(target.value) }
+          />
+          ASC
+        </label>
+        <label htmlFor="sort-desc">
+          <input
+            data-testid="column-sort-input-desc"
+            type="radio"
+            name="sort"
+            id="sort-desc"
+            value="DESC"
+            onChange={ ({ target }) => setOrderSort(target.value) }
+          />
+          DESC
+        </label>
+        <button
+          data-testid="column-sort-button"
+          type="button"
+          onClick={ handleOrder }
+        >
+          Ordenar
         </button>
         <button
           data-testid="button-remove-filters"
