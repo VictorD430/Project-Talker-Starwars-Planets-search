@@ -1,15 +1,46 @@
 import React, { useContext } from 'react';
 import Context from '../context/Context';
 import RequestAPI from '../services/RequestAPI';
+import TableHead from './TableHead';
+import TableBody from './TableBody';
 
 function Table() {
   const {
-    planets,
+    setPlanets,
+    initialList,
     nameFilter,
     setNameFilter,
+    columnFilter,
+    setColumnFilter,
+    initialColumn,
+    setInitialColumn,
+    comparisonFilter,
+    setComparisonFilter,
+    valueFilter,
+    setValueFilter,
+    filtered,
+    setFiltered,
   } = useContext(Context);
 
-  const listPlanets = planets;
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const filters = { columnFilter, comparisonFilter, valueFilter };
+    setFiltered([...filtered, filters]);
+    const columnsFiltered = initialColumn.filter((element) => element !== columnFilter);
+    setInitialColumn(columnsFiltered);
+    setColumnFilter('population');
+    setComparisonFilter('maior que');
+    setValueFilter(0);
+  };
+
+  const handleRemove = (filter) => {
+    const refreshFilter = filtered.filter((element) => element !== filter);
+    setFiltered(refreshFilter);
+    setInitialColumn([...initialColumn, filter.columnFilter]);
+    if (refreshFilter.length === 0) {
+      setPlanets(initialList);
+    }
+  };
 
   return (
     <form className="table-filter-container">
@@ -17,54 +48,81 @@ function Table() {
         <label htmlFor="name-filter">
           <input
             data-testid="name-filter"
-            className="name-filter"
+            id="name-filter"
             value={ nameFilter }
             type="text"
             onChange={ ({ target }) => setNameFilter(target.value.toLowerCase()) }
             placeholder="Filtrar por nome"
           />
         </label>
+        <label htmlFor="column-filter">
+          <select
+            data-testid="column-filter"
+            id="column-filter"
+            value={ columnFilter }
+            onChange={ ({ target }) => setColumnFilter(target.value) }
+          >
+            {
+              initialColumn.map((option, index) => (
+                <option key={ index }>{option}</option>
+              ))
+            }
+          </select>
+        </label>
+        <label htmlFor="comparison-filter">
+          <select
+            data-testid="comparison-filter"
+            id="comparison-filter"
+            value={ comparisonFilter }
+            onChange={ ({ target }) => setComparisonFilter(target.value) }
+          >
+            <option>maior que</option>
+            <option>menor que</option>
+            <option>igual a</option>
+          </select>
+        </label>
+        <label htmlFor="value-filter">
+          <input
+            data-testid="value-filter"
+            id="value-filter"
+            value={ valueFilter }
+            type="number"
+            onChange={ ({ target }) => setValueFilter(target.value) }
+          />
+        </label>
+        <button
+          data-testid="button-filter"
+          type="submit"
+          onClick={ handleSubmit }
+        >
+          FILTRAR
+        </button>
+      </section>
+      <section>
+        <ul>
+          {
+            filtered.map((filter, index) => (
+              <div id="filter-div" data-testid="filter" key={ index }>
+                <li>
+                  {`${filter.columnFilter} 
+                  ${filter.comparisonFilter} 
+                  ${filter.valueFilter}`}
+                </li>
+                <button
+                  type="button"
+                  onClick={ () => handleRemove(filter) }
+                >
+                  X
+                </button>
+              </div>
+            ))
+          }
+        </ul>
       </section>
       <table>
         <RequestAPI />
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Rotation Period</th>
-            <th>Orbital Period</th>
-            <th>Diameter</th>
-            <th>Climate</th>
-            <th>Gravity</th>
-            <th>Terrain</th>
-            <th>Surface Water</th>
-            <th>Population</th>
-            <th>Films</th>
-            <th>Created</th>
-            <th>Edited</th>
-            <th>URL</th>
-          </tr>
-        </thead>
-        <tbody>
-          {listPlanets
-            .map((planet, index) => (
-              <tr key={ index }>
-                <td>{planet.name}</td>
-                <td>{planet.rotation_period}</td>
-                <td>{planet.orbital_period}</td>
-                <td>{planet.diameter}</td>
-                <td>{planet.climate}</td>
-                <td>{planet.gravity}</td>
-                <td>{planet.terrain}</td>
-                <td>{planet.surface_water}</td>
-                <td>{planet.population}</td>
-                <td>{planet.residents}</td>
-                <td>{planet.films}</td>
-                <td>{planet.created}</td>
-                <td>{planet.edited}</td>
-                <td>{planet.url}</td>
-              </tr>
-            ))}
-        </tbody>
+        <TableHead />
+        <TableBody />
       </table>
     </form>
   );
