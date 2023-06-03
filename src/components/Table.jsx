@@ -14,6 +14,7 @@ function Table() {
     setColumnFilter,
     initialColumn,
     setInitialColumn,
+    initialColumns,
     comparisonFilter,
     setComparisonFilter,
     valueFilter,
@@ -40,6 +41,12 @@ function Table() {
     if (refreshFilter.length === 0) {
       setPlanets(initialList);
     }
+  };
+
+  const handleRemoveAll = () => {
+    setFiltered([]);
+    setPlanets(initialList);
+    setInitialColumn(initialColumns);
   };
 
   return (
@@ -96,6 +103,13 @@ function Table() {
           onClick={ handleSubmit }
         >
           FILTRAR
+        </button>
+        <button
+          data-testid="button-remove-filters"
+          type="button"
+          onClick={ handleRemoveAll }
+        >
+          Remover todas filtragens
         </button>
       </section>
       <section>
