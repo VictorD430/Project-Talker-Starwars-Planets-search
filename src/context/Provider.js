@@ -41,19 +41,18 @@ function Provider({ children }) {
   }, [nameFilter, initialList]);
 
   useEffect(() => {
-    let newFiltered = initialList;
     filtered.forEach((element) => {
-      newFiltered = newFiltered.filter((elem) => {
+      const newFiltered = initialList.filter((elem) => {
         if (element.comparisonFilter === 'maior que') {
-          return Number(elem[element.columnFilter]) > Number(element.number);
+          return Number(elem[element.columnFilter]) > Number(element.valueFilter);
         }
         if (element.comparisonFilter === 'menor que') {
-          return Number(elem[element.columnFilter]) < Number(element.number);
+          return Number(elem[element.columnFilter]) < Number(element.valueFilter);
         }
-        return (Number(elem[element.columnFilter]) === Number(element.number));
+        return (Number(elem[element.columnFilter]) === Number(element.valueFilter));
       });
+      setPlanets(newFiltered);
     });
-    setPlanets(newFiltered);
   }, [filtered, initialList]);
 
   return (
