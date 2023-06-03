@@ -41,8 +41,9 @@ function Provider({ children }) {
   }, [nameFilter, initialList]);
 
   useEffect(() => {
+    let newFiltered = initialList;
     filtered.forEach((element) => {
-      const newFiltered = initialList.filter((elem) => {
+      newFiltered = newFiltered.filter((elem) => {
         if (element.comparisonFilter === 'maior que') {
           return Number(elem[element.columnFilter]) > Number(element.valueFilter);
         }
@@ -51,8 +52,8 @@ function Provider({ children }) {
         }
         return (Number(elem[element.columnFilter]) === Number(element.valueFilter));
       });
-      setPlanets(newFiltered);
     });
+    setPlanets(newFiltered);
   }, [filtered, initialList]);
 
   return (
